@@ -42,9 +42,19 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
 
     const updateActiveIndex = () => {
       if (containerRef.current) {
-        const scrollLeft = containerRef.current.scrollLeft;
+        const container = containerRef.current;
+        const scrollLeft = container.scrollLeft;
+        const containerWidth = container.clientWidth;
+        const scrollWidth = container.scrollWidth;
+        const maxScroll = Math.max(0, scrollWidth - containerWidth);
+        
+        // Clamp scroll position to prevent going beyond
+        if (scrollLeft > maxScroll) {
+          container.scrollLeft = maxScroll;
+          return;
+        }
+        
         const cardWithGap = cardWidth + 24;
-        const containerWidth = containerRef.current.clientWidth;
         const cardsVisible = Math.floor(containerWidth / cardWithGap);
         const maxPosition = Math.max(0, services.length - cardsVisible);
         const newIndex = Math.round(scrollLeft / cardWithGap);
@@ -164,21 +174,24 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               justifyContent: canScroll ? "flex-start" : "center",
             }}
             drag={canScroll ? "x" : false}
-            dragConstraints={(_, { offset }) => {
-              if (!containerRef.current || !canScroll) return { left: 0, right: 0 };
-              const container = containerRef.current;
-              const containerWidth = container.clientWidth;
-              const scrollWidth = container.scrollWidth;
-              const actualMaxScroll = Math.max(0, scrollWidth - containerWidth);
-              return {
-                left: -actualMaxScroll,
-                right: 0,
-              };
+            dragConstraints={{
+              left: -maxScroll,
+              right: 0,
             }}
             dragElastic={0}
+            dragMomentum={false}
             onDragEnd={handleDragEnd}
             onScroll={(e) => {
               const target = e.target as HTMLDivElement;
+              const containerWidth = target.clientWidth;
+              const scrollWidth = target.scrollWidth;
+              const maxScrollValue = Math.max(0, scrollWidth - containerWidth);
+              
+              // Clamp scroll to prevent going beyond
+              if (target.scrollLeft > maxScrollValue) {
+                target.scrollLeft = maxScrollValue;
+              }
+              
               x.set(-target.scrollLeft);
             }}
           >
