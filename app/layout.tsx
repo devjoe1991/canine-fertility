@@ -45,27 +45,29 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://capitalcanine.co.uk"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://capital-canine-fertility.netlify.app"
+  ),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_GB",
-    url: "https://capitalcanine.co.uk",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://capital-canine-fertility.netlify.app",
     siteName: "Capital Canine Fertility",
     title: "Capital Canine Fertility | Professional Canine Breeding Services in London",
     description: "Professional canine breeding services in London. Expert progesterone testing, ultrasound scanning, sperm analysis, stud dog services, and comprehensive fertility services.",
     images: [
       {
-        url: "https://capitalcanine.co.uk/mainlogo.png",
+        url: "/mainlogo.png",
         width: 512,
         height: 512,
         alt: "Capital Canine Fertility Logo",
         type: "image/png",
       },
       {
-        url: "https://capitalcanine.co.uk/overlayebluehero.png",
+        url: "/overlayebluehero.png",
         width: 1200,
         height: 630,
         alt: "Capital Canine Fertility - Professional Canine Breeding Services",
@@ -79,7 +81,7 @@ export const metadata: Metadata = {
     description: "Professional canine breeding services in London. Expert fertility services for your breeding needs.",
     images: [
       {
-        url: "https://capitalcanine.co.uk/mainlogo.png",
+        url: "/mainlogo.png",
         alt: "Capital Canine Fertility Logo",
       },
     ],
