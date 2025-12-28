@@ -50,7 +50,9 @@ export default function LiquidCard({ service, index }: LiquidCardProps) {
     >
       <div className="text-4xl mb-4">{service.icon}</div>
       <h3 className={`font-serif font-semibold text-[#002147] mb-2 ${
-        service.id === "chilled-semen" ? "text-lg" : "text-xl"
+        service.id === "chilled-semen" || service.id === "microchipping" || service.id === "progesterone" || service.id === "ultrasound" || service.id === "whelping" || service.id === "puppy-care"
+          ? "text-lg" 
+          : "text-xl"
       }`}>
         {service.title}
       </h3>

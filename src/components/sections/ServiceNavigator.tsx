@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import LiquidCard from "@/components/ui/LiquidCard";
-import LiquidDots from "@/components/ui/LiquidDots";
+import ServiceProgressLine from "@/components/ui/ServiceProgressLine";
 
 interface ServiceData {
   id: string;
@@ -253,8 +253,8 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   };
 
   return (
-    <section id="services" className="py-20 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "60px", overflowX: "visible" }}>
-      <div className="max-w-7xl mx-auto px-4" style={{ height: "auto", minHeight: sectionHeight ? `${sectionHeight + 100}px` : "fit-content", overflowY: "visible", overflowX: "visible" }}>
+    <section id="services" className="py-20 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "60px", overflowX: "hidden", width: "100%", maxWidth: "100vw" }}>
+      <div className="max-w-7xl mx-auto px-4" style={{ height: "auto", minHeight: sectionHeight ? `${sectionHeight + 100}px` : "fit-content", overflowY: "visible", overflowX: "hidden", width: "100%", maxWidth: "100%" }}>
         <motion.h2
           className="font-serif text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
           initial={{ opacity: 0, y: 20 }}
@@ -280,17 +280,17 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
           style={{ 
             position: "relative", 
             isolation: "isolate", 
-            overflow: "visible", 
+            overflow: "hidden", 
             width: "100%",
-            maxWidth: "100vw",
+            maxWidth: "100%",
             height: sectionHeight ? `${sectionHeight}px` : "auto",
             minHeight: sectionHeight ? `${sectionHeight}px` : "fit-content",
             minWidth: "0",
-            paddingBottom: isTouchDevice ? "24px" : "4px",
+            paddingBottom: isTouchDevice ? "8px" : "0px",
             paddingLeft: "0",
             paddingRight: "0",
             overflowY: "visible",
-            overflowX: "visible",
+            overflowX: "hidden",
             boxSizing: "border-box",
           }}
         >
@@ -302,6 +302,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
             style={{
               width: canScroll ? `${services.length * cardWidth + (services.length - 1) * gap + 20}px` : "100%",
               minWidth: canScroll ? `${services.length * cardWidth + (services.length - 1) * gap + 20}px` : "auto",
+              maxWidth: "none",
               paddingLeft: "0",
               paddingRight: "20px",
               paddingBottom: "0",
@@ -379,8 +380,10 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               transform: "translateX(-50%)",
               width: "100%",
               zIndex: 10,
+              padding: "0",
+              margin: "0",
             }}>
-              <LiquidDots 
+              <ServiceProgressLine 
                 total={totalDots} 
                 activeIndex={activeIndex}
                 isAbsolute={true}
@@ -392,8 +395,8 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
 
         {/* Progress line positioned outside section on desktop */}
         {!isTouchDevice && canScroll && totalDots > 0 && (
-          <div style={{ position: "relative", height: "auto", minHeight: "24px" }}>
-            <LiquidDots 
+          <div style={{ position: "relative", height: "auto", minHeight: "4px", marginTop: "0px", padding: "0" }}>
+            <ServiceProgressLine 
               total={totalDots} 
               activeIndex={activeIndex}
               progress={scrollProgress}

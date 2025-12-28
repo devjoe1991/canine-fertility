@@ -2,14 +2,14 @@
 
 import { motion } from "framer-motion";
 
-interface LiquidDotsProps {
+interface ServiceProgressLineProps {
   total: number;
   activeIndex: number;
   isAbsolute?: boolean;
   progress?: number; // Progress from 0 to 1
 }
 
-export default function LiquidDots({ total, activeIndex, isAbsolute = false, progress = 0 }: LiquidDotsProps) {
+export default function ServiceProgressLine({ total, activeIndex, isAbsolute = false, progress = 0 }: ServiceProgressLineProps) {
   // Calculate line width based on total positions
   const lineWidth = total > 0 ? `${100 / total}%` : "0%";
   // Calculate line position based on progress
@@ -22,9 +22,12 @@ export default function LiquidDots({ total, activeIndex, isAbsolute = false, pro
         position: "relative", 
         height: "4px", 
         width: "100%",
-        marginTop: isAbsolute ? "0" : "0px",
+        marginTop: "0",
+        marginBottom: "0",
+        padding: "0",
         maxWidth: "200px",
-        margin: "0 auto",
+        marginLeft: "auto",
+        marginRight: "auto",
       }}
     >
       {/* Background track */}
