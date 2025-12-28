@@ -15,7 +15,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <Image
-                src="/logo.png"
+                src="/mainlogo.png"
                 alt="Capital Canine Fertility Logo"
                 width={60}
                 height={60}

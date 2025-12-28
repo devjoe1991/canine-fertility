@@ -27,11 +27,26 @@ export default function LiquidCard({ service, index }: LiquidCardProps) {
 
   return (
     <motion.div
-      className="flex-shrink-0 w-[280px] md:w-[320px] bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col hover:border-[#D4AF37]/30"
+      data-service-card
+      className="flex-shrink-0 w-[280px] md:w-[320px] bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col"
+      style={{ 
+        height: "100%",
+        minHeight: "100%",
+        minWidth: "0",
+        maxHeight: "none",
+        overflow: "visible",
+        border: "1px solid #e5e7eb",
+        outline: "1px solid transparent",
+        outlineOffset: "-1px",
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", damping: 25, stiffness: 200, delay: index * 0.1 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ 
+        y: -4,
+        outline: "1px solid #D4AF37",
+        outlineOffset: "0px",
+      }}
     >
       <div className="text-4xl mb-4">{service.icon}</div>
       <h3 className="font-serif text-xl font-semibold text-[#002147] mb-2">

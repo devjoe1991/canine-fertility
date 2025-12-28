@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${playfairDisplay.variable} antialiased`}
+        suppressHydrationWarning
       >
         <UIProvider>
           {children}

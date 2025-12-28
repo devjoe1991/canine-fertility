@@ -29,7 +29,7 @@ export default function Header() {
         <nav className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Image
-              src="/logo.png"
+              src="/mainlogo.png"
               alt="Capital Canine Fertility Logo"
               width={50}
               height={50}
