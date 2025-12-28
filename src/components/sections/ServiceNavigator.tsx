@@ -139,8 +139,8 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   };
 
   return (
-    <section id="services" className="py-20 px-4 bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section id="services" className="py-20 px-4 bg-white relative">
+      <div className="max-w-7xl mx-auto relative">
         <motion.h2
           className="font-serif text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
           initial={{ opacity: 0, y: 20 }}
@@ -172,12 +172,17 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               width: "100%",
               paddingRight: "0",
               justifyContent: canScroll ? "flex-start" : "center",
+              overscrollBehavior: "contain",
             }}
             drag={canScroll ? "x" : false}
-            dragConstraints={{
-              left: -maxScroll,
-              right: 0,
-            }}
+            dragConstraints={
+              canScroll && maxScroll > 0
+                ? {
+                    left: -maxScroll,
+                    right: 0,
+                  }
+                : false
+            }
             dragElastic={0}
             dragMomentum={false}
             onDragEnd={handleDragEnd}
@@ -190,6 +195,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               // Clamp scroll to prevent going beyond
               if (target.scrollLeft > maxScrollValue) {
                 target.scrollLeft = maxScrollValue;
+                return;
               }
               
               x.set(-target.scrollLeft);
