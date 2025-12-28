@@ -29,6 +29,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   const [totalDots, setTotalDots] = useState(0);
   const [sectionHeight, setSectionHeight] = useState<number | null>(null);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const gap = 24;
   const cardWithGap = cardWidth + gap;
@@ -165,6 +166,17 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
       };
     }
   }, [services.length, cardWidth, dragX]);
+  
+  // Update progress when dragX or maxScroll changes
+  useEffect(() => {
+    if (maxScroll > 0) {
+      const unsubscribe = dragX.on("change", (value) => {
+        const progress = Math.max(0, Math.min(1, Math.abs(value) / maxScroll));
+        setScrollProgress(progress);
+      });
+      return () => unsubscribe();
+    }
+  }, [dragX, maxScroll]);
 
   const handleDrag = (event: any, info: any) => {
     // Let Framer Motion handle the drag position automatically
@@ -180,6 +192,12 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     
     if (clampedIndex !== activeIndex) {
       setActiveIndex(clampedIndex);
+    }
+    
+    // Calculate scroll progress (0 to 1)
+    if (maxScroll > 0) {
+      const progress = Math.max(0, Math.min(1, Math.abs(currentX) / maxScroll));
+      setScrollProgress(progress);
     }
   };
 
@@ -226,6 +244,12 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     const finalX = Math.max(-maxScroll, Math.min(0, targetX));
     setActiveIndex(targetIndex);
     dragX.set(finalX);
+    
+    // Update progress after drag ends
+    if (maxScroll > 0) {
+      const progress = Math.max(0, Math.min(1, Math.abs(finalX) / maxScroll));
+      setScrollProgress(progress);
+    }
   };
 
   return (
@@ -346,7 +370,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
             }
           `}</style>
           
-          {/* Dots positioned inside section on touch devices */}
+          {/* Progress line positioned inside section on touch devices */}
           {isTouchDevice && canScroll && totalDots > 0 && (
             <div style={{ 
               position: "absolute", 
@@ -360,17 +384,19 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
                 total={totalDots} 
                 activeIndex={activeIndex}
                 isAbsolute={true}
+                progress={scrollProgress}
               />
             </div>
           )}
         </div>
 
-        {/* Dots positioned outside section on desktop */}
+        {/* Progress line positioned outside section on desktop */}
         {!isTouchDevice && canScroll && totalDots > 0 && (
           <div style={{ position: "relative", height: "auto", minHeight: "24px" }}>
             <LiquidDots 
               total={totalDots} 
-              activeIndex={activeIndex} 
+              activeIndex={activeIndex}
+              progress={scrollProgress}
             />
           </div>
         )}

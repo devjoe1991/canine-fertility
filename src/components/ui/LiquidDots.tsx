@@ -6,37 +6,53 @@ interface LiquidDotsProps {
   total: number;
   activeIndex: number;
   isAbsolute?: boolean;
+  progress?: number; // Progress from 0 to 1
 }
 
-export default function LiquidDots({ total, activeIndex, isAbsolute = false }: LiquidDotsProps) {
+export default function LiquidDots({ total, activeIndex, isAbsolute = false, progress = 0 }: LiquidDotsProps) {
+  // Calculate line width based on total positions
+  const lineWidth = total > 0 ? `${100 / total}%` : "0%";
+  // Calculate line position based on progress
+  const linePosition = progress * (100 - (100 / total));
+
   return (
-    <div className="flex justify-center items-center gap-2" style={{ position: "relative", height: "24px", marginTop: isAbsolute ? "0" : "0px" }}>
-      {Array.from({ length: total }).map((_, index) => (
-        <div key={index} className="relative w-2 h-2 flex items-center justify-center">
-          {index === activeIndex ? (
-            <motion.div
-              layoutId="activeDot"
-              className="absolute bg-[#D4AF37] rounded-full"
-              transition={{
-                type: "spring",
-                damping: 20,
-                stiffness: 150,
-              }}
-              style={{
-                width: "16px",
-                height: "8px",
-                borderRadius: "4px",
-              }}
-            />
-          ) : (
-            <motion.div
-              className="w-2 h-2 bg-gray-300 rounded-full"
-              whileHover={{ scale: 1.2, backgroundColor: "#D4AF37" }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            />
-          )}
-        </div>
-      ))}
+    <div 
+      className="flex justify-center items-center" 
+      style={{ 
+        position: "relative", 
+        height: "4px", 
+        width: "100%",
+        marginTop: isAbsolute ? "0" : "0px",
+        maxWidth: "200px",
+        margin: "0 auto",
+      }}
+    >
+      {/* Background track */}
+      <div 
+        className="absolute inset-0 bg-gray-200 rounded-full"
+        style={{
+          height: "2px",
+          top: "50%",
+          transform: "translateY(-50%)",
+        }}
+      />
+      
+      {/* Moveable line indicator */}
+      <motion.div
+        className="absolute bg-[#D4AF37] rounded-full"
+        style={{
+          height: "4px",
+          width: lineWidth,
+          top: "50%",
+          left: `${linePosition}%`,
+          transform: "translateY(-50%)",
+        }}
+        transition={{
+          type: "spring",
+          damping: 25,
+          stiffness: 200,
+        }}
+      />
     </div>
   );
 }
