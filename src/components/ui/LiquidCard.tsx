@@ -31,9 +31,9 @@ export default function LiquidCard({ service, index }: LiquidCardProps) {
       className="flex-shrink-0 w-[280px] md:w-[320px] bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col"
       style={{ 
         height: "100%",
-        minHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
         minWidth: "0",
-        maxHeight: "none",
         overflow: "visible",
         border: "1px solid #e5e7eb",
         outline: "1px solid transparent",
@@ -50,15 +50,16 @@ export default function LiquidCard({ service, index }: LiquidCardProps) {
     >
       <div className="text-4xl mb-4">{service.icon}</div>
       <h3 className={`font-serif font-semibold text-[#002147] mb-2 ${
-        service.id === "chilled-semen" || service.id === "microchipping" || service.id === "progesterone" || service.id === "ultrasound" || service.id === "whelping" || service.id === "puppy-care"
-          ? "text-lg" 
-          : "text-xl"
+        service.id === "sperm-analysis" || service.id === "stud-handling" || service.id === "ultrasound" || service.id === "whelping" || service.id === "puppy-care"
+          ? "text-lg md:text-xl"
+          : "text-base md:text-lg"
       }`}>
         {service.title}
       </h3>
-      <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-grow">{service.description}</p>
+      <p className="text-sm text-gray-600 leading-relaxed mb-6">{service.description}</p>
       <motion.button
         className="w-full px-6 py-3 border-2 border-[#D4AF37] bg-[#D4AF37] text-[#002147] font-semibold hover:bg-[#C4A027] hover:border-[#C4A027] transition-all duration-200 rounded-sm shadow-lg hover:shadow-xl"
+        style={{ marginTop: "auto" }}
         whileHover={{ scale: 1.02, y: -1 }}
         whileTap={{ scale: 0.98 }}
         onClick={handleEnquireClick}

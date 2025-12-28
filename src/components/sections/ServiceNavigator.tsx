@@ -253,7 +253,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   };
 
   return (
-    <section id="services" className="py-20 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "60px", overflowX: "hidden", width: "100%", maxWidth: "100vw" }}>
+    <section id="services" className="py-20 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "0px", overflowX: "hidden", width: "100%", maxWidth: "100vw" }}>
       <div className="max-w-7xl mx-auto px-4" style={{ height: "auto", minHeight: sectionHeight ? `${sectionHeight + 100}px` : "fit-content", overflowY: "visible", overflowX: "hidden", width: "100%", maxWidth: "100%" }}>
         <motion.h2
           className="font-serif text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
@@ -286,7 +286,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
             height: sectionHeight ? `${sectionHeight}px` : "auto",
             minHeight: sectionHeight ? `${sectionHeight}px` : "fit-content",
             minWidth: "0",
-            paddingBottom: isTouchDevice ? "8px" : "0px",
+            paddingBottom: "0px",
             paddingLeft: "0",
             paddingRight: "0",
             overflowY: "visible",
@@ -344,8 +344,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
                 className="shrink-0" 
                 style={{ 
                   width: `${cardWidth}px`,
-                  height: "100%",
-                  minHeight: "100%",
+                  height: "auto",
                   minWidth: `${cardWidth}px`,
                   flexShrink: 0,
                   overflow: "visible",
@@ -371,38 +370,24 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
             }
           `}</style>
           
-          {/* Progress line positioned inside section on touch devices */}
-          {isTouchDevice && canScroll && totalDots > 0 && (
+          {/* Progress line positioned underneath cards inside the section */}
+          {canScroll && totalDots > 0 && (
             <div style={{ 
-              position: "absolute", 
-              bottom: "0px", 
-              left: "50%", 
-              transform: "translateX(-50%)",
+              position: "relative", 
               width: "100%",
-              zIndex: 10,
-              padding: "0",
-              margin: "0",
+              paddingTop: "12px",
+              paddingBottom: "0",
+              marginTop: "0",
+              marginBottom: "0",
             }}>
               <ServiceProgressLine 
                 total={totalDots} 
                 activeIndex={activeIndex}
-                isAbsolute={true}
                 progress={scrollProgress}
               />
             </div>
           )}
         </div>
-
-        {/* Progress line positioned outside section on desktop */}
-        {!isTouchDevice && canScroll && totalDots > 0 && (
-          <div style={{ position: "relative", height: "auto", minHeight: "4px", marginTop: "0px", padding: "0" }}>
-            <ServiceProgressLine 
-              total={totalDots} 
-              activeIndex={activeIndex}
-              progress={scrollProgress}
-            />
-          </div>
-        )}
       </div>
     </section>
   );
