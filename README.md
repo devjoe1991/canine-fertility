@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Capital Canine Fertility
+
+Professional Canine Breeding Services website built with Next.js, React, Tailwind CSS, and Framer Motion.
+
+## Features
+
+- 🎨 Premium, minimalist design with Deep Oxford Blue and Metallic Gold branding
+- 📱 Mobile-first responsive design
+- 🎭 Smooth animations with Framer Motion
+- 🎯 Liquid swipe navigation for services
+- 📋 Interactive bottom sheet for service details
+- 🖼️ Hero section with ultrasound background imagery
+
+## Tech Stack
+
+- **Framework:** Next.js 16
+- **UI Library:** React 19
+- **Styling:** Tailwind CSS 4
+- **Animations:** Framer Motion
+- **Language:** TypeScript
+- **Package Manager:** pnpm
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20 or higher
+- pnpm 10.12.4 or higher
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Run development server
 pnpm dev
-# or
-bun dev
+
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project is configured for deployment on Netlify.
 
-## Learn More
+### Netlify Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. Connect your GitHub repository to Netlify
+2. Netlify will automatically detect the `netlify.toml` configuration
+3. The build command and publish directory are pre-configured
+4. Deploy!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The site will be automatically deployed on every push to the main branch.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+├── app/                 # Next.js app directory
+│   ├── layout.tsx      # Root layout
+│   ├── page.tsx        # Home page
+│   └── globals.css     # Global styles
+├── src/
+│   ├── components/     # React components
+│   │   ├── layout/     # Header, Footer
+│   │   ├── sections/   # Hero, About, Services
+│   │   ├── ui/         # LiquidCard, LiquidDots
+│   │   └── overlay/    # BottomSheet
+│   ├── context/        # React Context (UI state)
+│   └── data/           # Service data
+├── public/             # Static assets
+└── netlify.toml        # Netlify configuration
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private - All rights reserved
