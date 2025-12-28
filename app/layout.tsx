@@ -87,6 +87,17 @@ export const metadata: Metadata = {
     // google: "your-verification-code",
   },
   category: "Veterinary Services",
+  icons: {
+    icon: [
+      { url: "/mainlogo.png", type: "image/png" },
+      { url: "/mainlogo.png", type: "image/png", sizes: "32x32" },
+      { url: "/mainlogo.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: [
+      { url: "/mainlogo.png", type: "image/png", sizes: "180x180" },
+    ],
+    shortcut: "/mainlogo.png",
+  },
 };
 
 export const viewport: Viewport = {
