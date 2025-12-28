@@ -19,10 +19,10 @@ export default function Hero() {
       </div>
       
       {/* Blue overlay to maintain blue background */}
-      <div className="absolute inset-0 z-[1] bg-[#002147]/70" />
+      <div className="absolute inset-0 z-10 bg-[#002147]/70" />
       
       {/* Content */}
-      <div className="relative z-[2] max-w-4xl mx-auto text-center">
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
         <motion.h1
           className="font-serif text-5xl md:text-7xl font-bold text-white mb-6"
           initial={{ opacity: 0, y: 30 }}
@@ -52,8 +52,8 @@ export default function Hero() {
       </div>
       
       {/* Shadow effect and separator at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-[1] h-8 bg-gradient-to-b from-transparent via-black/10 to-black/20" />
-      <div className="absolute bottom-0 left-0 right-0 z-[2] h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 z-10 h-8 bg-linear-to-b from-transparent via-black/10 to-black/20" />
+      <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-linear-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
     </section>
   );
 }
