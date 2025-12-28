@@ -75,9 +75,18 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
         const container = containerRef.current;
         const containerWidth = container.clientWidth;
         
-        // Calculate total width of all cards including gaps
-        const totalCardsWidth = services.length * cardWidth + (services.length - 1) * gap;
-        const maxScrollValue = Math.max(0, totalCardsWidth - containerWidth);
+        // Calculate total width of all cards including gaps and padding
+        const paddingRight = 20; // Match the padding-right on the slider track
+        const totalCardsWidth = services.length * cardWidth + (services.length - 1) * gap + paddingRight;
+        
+        // Calculate the exact position where the last card's right edge aligns with container's right edge
+        // This ensures the last card is fully visible, just like the first card is at position 0
+        // Position of last card's left edge: (services.length - 1) * cardWithGap
+        // Position of last card's right edge: (services.length - 1) * cardWithGap + cardWidth
+        // We want: lastCardRightEdge - scrollPosition = containerWidth
+        // So: scrollPosition = lastCardRightEdge - containerWidth
+        const lastCardRightEdge = (services.length - 1) * cardWithGap + cardWidth + paddingRight;
+        const maxScrollValue = Math.max(0, lastCardRightEdge - containerWidth);
         setMaxScroll(maxScrollValue);
         
         // Only enable scroll if content overflows
@@ -204,17 +213,24 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
 
     // Clamp to valid swipe positions (0 to maxPosition)
     targetIndex = Math.max(0, Math.min(targetIndex, maxPosition));
-    const targetX = -targetIndex * cardWithGap;
+    let targetX = -targetIndex * cardWithGap;
     
-    // Ensure we don't drag beyond the actual maximum
+    // If we're at the last position, ensure we scroll to show the last card fully
+    // This matches the behavior at the start where the first card is fully visible
+    if (targetIndex >= maxPosition && maxScroll > 0) {
+      // Use the exact maxScroll value which positions the last card's right edge at container's right edge
+      targetX = -maxScroll;
+    }
+    
+    // Ensure we don't drag beyond the actual maximum (0 to -maxScroll)
     const finalX = Math.max(-maxScroll, Math.min(0, targetX));
     setActiveIndex(targetIndex);
     dragX.set(finalX);
   };
 
   return (
-    <section id="services" className="py-20 px-4 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "60px" }}>
-      <div className="max-w-7xl mx-auto" style={{ height: "auto", minHeight: sectionHeight ? `${sectionHeight + 100}px` : "fit-content", overflowY: "visible" }}>
+    <section id="services" className="py-20 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "60px", overflowX: "visible" }}>
+      <div className="max-w-7xl mx-auto px-4" style={{ height: "auto", minHeight: sectionHeight ? `${sectionHeight + 100}px` : "fit-content", overflowY: "visible", overflowX: "visible" }}>
         <motion.h2
           className="font-serif text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
           initial={{ opacity: 0, y: 20 }}
@@ -236,16 +252,22 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
 
         <div 
           ref={sectionRef}
-          className="relative px-4 md:px-0" 
+          className="relative" 
           style={{ 
             position: "relative", 
             isolation: "isolate", 
-            overflow: "clip", 
+            overflow: "visible", 
+            width: "100%",
+            maxWidth: "100vw",
             height: sectionHeight ? `${sectionHeight}px` : "auto",
             minHeight: sectionHeight ? `${sectionHeight}px` : "fit-content",
             minWidth: "0",
-            paddingBottom: isTouchDevice ? "60px" : "20px",
+            paddingBottom: isTouchDevice ? "24px" : "4px",
+            paddingLeft: "0",
+            paddingRight: "0",
             overflowY: "visible",
+            overflowX: "visible",
+            boxSizing: "border-box",
           }}
         >
           <motion.div
@@ -254,27 +276,29 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               canScroll ? "cursor-grab active:cursor-grabbing" : "cursor-default"
             }`}
             style={{
-              width: "100%",
-              paddingRight: "0",
+              width: canScroll ? `${services.length * cardWidth + (services.length - 1) * gap + 20}px` : "100%",
+              minWidth: canScroll ? `${services.length * cardWidth + (services.length - 1) * gap + 20}px` : "auto",
+              paddingLeft: "0",
+              paddingRight: "20px",
               paddingBottom: "0",
-              justifyContent: canScroll ? "flex-start" : "center",
+              justifyContent: "flex-start",
               position: "relative",
               touchAction: "pan-x",
-              display: "flex",
+              display: "flex !important" as any,
               alignItems: "stretch",
               height: "auto",
               minHeight: "0",
-              minWidth: "0",
               overflow: "visible",
               willChange: "transform",
+              boxSizing: "border-box",
               x: dragX,
             }}
             drag={canScroll ? "x" : false}
             dragConstraints={
               canScroll && maxScroll > 0
                 ? {
-                    left: -maxScroll - 10, // Add small buffer to ensure we can reach the end
-                    right: 10, // Small buffer on the right
+                    left: -maxScroll, // Exact position to show last card fully
+                    right: 0, // Start position
                   }
                 : false
             }
@@ -292,15 +316,17 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
             {services.map((service, index) => (
               <div 
                 key={service.id} 
-                className="flex-shrink-0" 
+                className="shrink-0" 
                 style={{ 
                   width: `${cardWidth}px`,
                   height: "100%",
                   minHeight: "100%",
-                  minWidth: "0",
+                  minWidth: `${cardWidth}px`,
+                  flexShrink: 0,
                   overflow: "visible",
                   display: "flex",
                   alignSelf: "stretch",
+                  boxSizing: "border-box",
                 }}
               >
                 <LiquidCard service={service} index={index} />
@@ -312,6 +338,11 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
             .vertical-lock {
               align-items: stretch !important;
               overflow-y: visible !important;
+              display: flex !important;
+              justify-content: flex-start !important;
+            }
+            * {
+              box-sizing: border-box;
             }
           `}</style>
           
@@ -319,7 +350,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
           {isTouchDevice && canScroll && totalDots > 0 && (
             <div style={{ 
               position: "absolute", 
-              bottom: "16px", 
+              bottom: "0px", 
               left: "50%", 
               transform: "translateX(-50%)",
               width: "100%",

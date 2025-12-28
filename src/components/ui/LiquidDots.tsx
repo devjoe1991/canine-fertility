@@ -10,7 +10,7 @@ interface LiquidDotsProps {
 
 export default function LiquidDots({ total, activeIndex, isAbsolute = false }: LiquidDotsProps) {
   return (
-    <div className="flex justify-center items-center gap-2" style={{ position: "relative", height: "24px", marginTop: isAbsolute ? "0" : "8px" }}>
+    <div className="flex justify-center items-center gap-2" style={{ position: "relative", height: "24px", marginTop: isAbsolute ? "0" : "0px" }}>
       {Array.from({ length: total }).map((_, index) => (
         <div key={index} className="relative w-2 h-2 flex items-center justify-center">
           {index === activeIndex ? (

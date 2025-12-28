@@ -52,7 +52,7 @@ export default function Header() {
               Contact
             </a>
             <button className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm">
-              Book Now
+              Enquire Now
             </button>
           </div>
 
@@ -113,7 +113,7 @@ export default function Header() {
                   Contact
                 </a>
                 <button className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm w-full mt-2">
-                  Book Now
+                  Enquire Now
                 </button>
               </div>
             </motion.div>

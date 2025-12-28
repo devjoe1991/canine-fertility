@@ -6,10 +6,10 @@ import Image from "next/image";
 export default function Hero() {
   return (
     <section className="relative min-h-[40vh] flex items-center justify-center px-4 py-12 bg-[#002147] overflow-hidden">
-      {/* Faded Background Image */}
-      <div className="absolute inset-0 z-0 opacity-35">
+      {/* Background Image with Blue Overlay */}
+      <div className="absolute inset-0 z-0">
         <Image
-          src="/ultrasound-bg.jpg"
+          src="/overlayebluehero.png"
           alt=""
           fill
           className="object-cover"
@@ -18,7 +18,7 @@ export default function Hero() {
         />
       </div>
       
-      {/* Blue overlay to maintain blue background */}
+      {/* Additional blue overlay to maintain blue background */}
       <div className="absolute inset-0 z-10 bg-[#002147]/70" />
       
       {/* Content */}
@@ -40,14 +40,14 @@ export default function Hero() {
           Professional Canine Breeding Services in the Heart of the Capital
         </motion.p>
         <motion.button
-          className="px-8 py-4 border-2 border-[#D4AF37] bg-[#D4AF37] text-[#002147] font-semibold text-lg hover:bg-[#C4A027] hover:border-[#C4A027] transition-colors rounded-sm shadow-lg"
+          className="px-8 py-4 border-2 border-[#D4AF37] bg-transparent text-white font-semibold text-lg hover:bg-[#D4AF37]/20 hover:border-[#D4AF37] transition-colors rounded-sm shadow-lg"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.6 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          Book Now
+          Enquire Now
         </motion.button>
       </div>
       
