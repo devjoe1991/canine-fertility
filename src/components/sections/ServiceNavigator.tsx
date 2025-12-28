@@ -35,7 +35,6 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   
   // Use drag position instead of scroll
   const dragX = useMotionValue(0);
-  const springX = useSpring(dragX, { damping: 30, stiffness: 300 });
 
   useEffect(() => {
     // Hydration fix: Wait for client-side mount before calculations
@@ -75,9 +74,12 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
       if (containerRef.current) {
         const container = containerRef.current;
         const containerWidth = container.clientWidth;
-        const scrollWidth = container.scrollWidth;
-        const maxScrollValue = Math.max(0, scrollWidth - containerWidth);
+        
+        // Calculate total width of all cards including gaps
+        const totalCardsWidth = services.length * cardWidth + (services.length - 1) * gap;
+        const maxScrollValue = Math.max(0, totalCardsWidth - containerWidth);
         setMaxScroll(maxScrollValue);
+        
         // Only enable scroll if content overflows
         setCanScroll(maxScrollValue > 10); // 10px threshold for rounding
         
@@ -156,26 +158,48 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   }, [services.length, cardWidth, dragX]);
 
   const handleDrag = (event: any, info: any) => {
-    // Update drag position
-    const newX = Math.max(-maxScroll, Math.min(0, info.offset.x));
-    dragX.set(newX);
+    // Let Framer Motion handle the drag position automatically
+    // We just update the active index based on current position
+    const currentX = dragX.get();
+    const containerWidth = containerRef.current?.clientWidth || 0;
+    const cardWithGap = cardWidth + 24;
+    const cardsVisible = Math.floor(containerWidth / cardWithGap);
+    const maxPosition = Math.max(0, services.length - cardsVisible);
+    
+    const newIndex = Math.round(Math.abs(currentX) / cardWithGap);
+    const clampedIndex = Math.max(0, Math.min(newIndex, maxPosition));
+    
+    if (clampedIndex !== activeIndex) {
+      setActiveIndex(clampedIndex);
+    }
   };
 
   const handleDragEnd = (event: any, info: any) => {
     if (!containerRef.current) return;
     
-    const offset = info.offset.x;
+    const currentX = dragX.get();
     const velocity = info.velocity.x;
     const containerWidth = containerRef.current.clientWidth;
     const cardsVisible = Math.floor(containerWidth / cardWithGap);
     const maxPosition = Math.max(0, services.length - cardsVisible);
 
-    let targetIndex = activeIndex;
+    // Calculate current index from position
+    const currentIndex = Math.round(Math.abs(currentX) / cardWithGap);
+    let targetIndex = currentIndex;
 
-    if (Math.abs(velocity) > 500) {
-      targetIndex = velocity < 0 ? activeIndex + 1 : activeIndex - 1;
-    } else if (Math.abs(offset) > cardWithGap / 2) {
-      targetIndex = offset < 0 ? activeIndex + 1 : activeIndex - 1;
+    // Use velocity for momentum-based scrolling
+    if (Math.abs(velocity) > 300) {
+      // Fast swipe - move multiple cards
+      const direction = velocity < 0 ? 1 : -1;
+      const cardsToMove = Math.min(Math.ceil(Math.abs(velocity) / 400), 3);
+      targetIndex = currentIndex + (direction * cardsToMove);
+    } else if (Math.abs(velocity) > 100) {
+      // Medium swipe - move one card
+      targetIndex = velocity < 0 ? currentIndex + 1 : currentIndex - 1;
+    } else {
+      // Slow drag - snap to nearest card
+      const nearestIndex = Math.round(Math.abs(currentX) / cardWithGap);
+      targetIndex = nearestIndex;
     }
 
     // Clamp to valid swipe positions (0 to maxPosition)
@@ -243,19 +267,25 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               minWidth: "0",
               overflow: "visible",
               willChange: "transform",
-              x: springX,
+              x: dragX,
             }}
             drag={canScroll ? "x" : false}
             dragConstraints={
               canScroll && maxScroll > 0
                 ? {
-                    left: -maxScroll,
-                    right: 0,
+                    left: -maxScroll - 10, // Add small buffer to ensure we can reach the end
+                    right: 10, // Small buffer on the right
                   }
                 : false
             }
-            dragElastic={0.1}
-            dragMomentum={false}
+            dragElastic={0.15}
+            dragMomentum={true}
+            dragTransition={{ 
+              bounceStiffness: 300, 
+              bounceDamping: 30,
+              power: 0.4,
+              timeConstant: 200
+            }}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
           >

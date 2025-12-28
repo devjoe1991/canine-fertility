@@ -50,7 +50,7 @@ export const services: ServiceData[] = [
   },
   {
     id: "chilled-semen",
-    title: "Chilled Semen Preparation & Insemination",
+    title: "Chilled Semen & Insemination",
     description: "Collection, preparation, and insemination services. We accept live chilled semen from anywhere in the world.",
     icon: "🧊",
     details: "Professional chilled semen collection, preparation, and insemination services. We handle the complete process from collection to packaging, ensuring optimal viability for storage or shipping. Our preparation techniques maintain sperm quality for extended periods. We accept live chilled semen deliveries from anywhere in the world, making international breeding arrangements seamless and reliable.",
