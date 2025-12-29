@@ -56,14 +56,15 @@ export default function GlobalBottomSheet() {
                 <p className="text-gray-700 leading-relaxed mb-6">
                   {bottomSheetContent.details}
                 </p>
-                <motion.button
-                  onClick={closeBottomSheet}
-                  className="w-full py-4 border-2 border-[#D4AF37] bg-[#D4AF37] text-[#002147] font-semibold rounded-sm hover:bg-[#C4A027] hover:border-[#C4A027] transition-colors shadow-lg"
+                <motion.a
+                  href={`mailto:capitalcaninefertility@gmail.com?subject=Enquiry about ${bottomSheetContent.title}`}
+                  className="w-full py-4 border-2 border-[#D4AF37] bg-[#D4AF37] text-[#002147] font-semibold rounded-sm hover:bg-[#C4A027] hover:border-[#C4A027] transition-colors shadow-lg inline-block text-center"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={closeBottomSheet}
                 >
                   Enquire Now
-                </motion.button>
+                </motion.a>
               </div>
             </div>
           </motion.div>

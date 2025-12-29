@@ -13,8 +13,8 @@ export default function Header() {
       <div className="bg-[#002147] text-white py-2 px-4 text-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <span className="text-[#D4AF37] font-medium">Capital Canine</span>
-          <a href="tel:+441234567890" className="hover:text-[#D4AF37] transition-colors">
-            +44 (0) 123 456 7890
+          <a href="tel:+447377677270" className="hover:text-[#D4AF37] transition-colors">
+            +44 7377 677270
           </a>
         </div>
       </div>
@@ -51,9 +51,12 @@ export default function Header() {
             <a href="#contact" className="text-[#002147] hover:text-[#D4AF37] transition-colors">
               Contact
             </a>
-            <button className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm">
+            <a 
+              href="mailto:capitalcaninefertility@gmail.com?subject=Enquiry from Website"
+              className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm inline-block"
+            >
               Enquire Now
-            </button>
+            </a>
           </div>
 
           {/* Mobile Hamburger Menu */}
@@ -112,9 +115,13 @@ export default function Header() {
                 >
                   Contact
                 </a>
-                <button className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm w-full mt-2">
+                <a 
+                  href="mailto:capitalcaninefertility@gmail.com?subject=Enquiry from Website"
+                  className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm w-full mt-2 inline-block text-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Enquire Now
-                </button>
+                </a>
               </div>
             </motion.div>
           )}

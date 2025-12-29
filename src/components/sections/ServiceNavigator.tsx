@@ -179,15 +179,20 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   }, [dragX, maxScroll]);
 
   const handleDrag = (event: any, info: any) => {
+    if (!containerRef.current || !canScroll) return;
+    
     // Let Framer Motion handle the drag position automatically
     // We just update the active index based on current position
     const currentX = dragX.get();
-    const containerWidth = containerRef.current?.clientWidth || 0;
+    const containerWidth = containerRef.current.clientWidth;
     const cardWithGap = cardWidth + 24;
     const cardsVisible = Math.floor(containerWidth / cardWithGap);
     const maxPosition = Math.max(0, services.length - cardsVisible);
     
-    const newIndex = Math.round(Math.abs(currentX) / cardWithGap);
+    // Clamp currentX to valid range
+    const clampedX = Math.max(-maxScroll, Math.min(0, currentX));
+    
+    const newIndex = Math.round(Math.abs(clampedX) / cardWithGap);
     const clampedIndex = Math.max(0, Math.min(newIndex, maxPosition));
     
     if (clampedIndex !== activeIndex) {
@@ -196,13 +201,13 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     
     // Calculate scroll progress (0 to 1)
     if (maxScroll > 0) {
-      const progress = Math.max(0, Math.min(1, Math.abs(currentX) / maxScroll));
+      const progress = Math.max(0, Math.min(1, Math.abs(clampedX) / maxScroll));
       setScrollProgress(progress);
     }
   };
 
   const handleDragEnd = (event: any, info: any) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !canScroll || maxScroll <= 0) return;
     
     const currentX = dragX.get();
     const velocity = info.velocity.x;
@@ -210,8 +215,11 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     const cardsVisible = Math.floor(containerWidth / cardWithGap);
     const maxPosition = Math.max(0, services.length - cardsVisible);
 
+    // Clamp currentX to valid range first
+    const clampedCurrentX = Math.max(-maxScroll, Math.min(0, currentX));
+    
     // Calculate current index from position
-    const currentIndex = Math.round(Math.abs(currentX) / cardWithGap);
+    const currentIndex = Math.round(Math.abs(clampedCurrentX) / cardWithGap);
     let targetIndex = currentIndex;
 
     // Use velocity for momentum-based scrolling
@@ -225,7 +233,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
       targetIndex = velocity < 0 ? currentIndex + 1 : currentIndex - 1;
     } else {
       // Slow drag - snap to nearest card
-      const nearestIndex = Math.round(Math.abs(currentX) / cardWithGap);
+      const nearestIndex = Math.round(Math.abs(clampedCurrentX) / cardWithGap);
       targetIndex = nearestIndex;
     }
 

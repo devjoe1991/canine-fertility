@@ -32,15 +32,24 @@ export default function Hero() {
           Capital Canine Fertility
         </motion.h1>
         <motion.p
-          className="text-xl md:text-2xl text-white/90 mb-12 max-w-2xl mx-auto"
+          className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.4 }}
         >
           Professional Canine Breeding Services in the Heart of the Capital
         </motion.p>
-        <motion.button
-          className="px-8 py-4 border-2 border-[#D4AF37] bg-transparent text-white font-semibold text-lg hover:bg-[#D4AF37]/20 hover:border-[#D4AF37] transition-colors rounded-sm shadow-lg"
+        <motion.p
+          className="text-lg md:text-xl text-white/80 mb-12 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.5 }}
+        >
+          Professional Canine Fertility Services across London, Essex & Herts
+        </motion.p>
+        <motion.a
+          href="mailto:capitalcaninefertility@gmail.com?subject=Enquiry from Website"
+          className="px-8 py-4 border-2 border-[#D4AF37] bg-transparent text-white font-semibold text-lg hover:bg-[#D4AF37]/20 hover:border-[#D4AF37] transition-colors rounded-sm shadow-lg inline-block"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.6 }}
@@ -48,7 +57,7 @@ export default function Hero() {
           whileTap={{ scale: 0.95 }}
         >
           Enquire Now
-        </motion.button>
+        </motion.a>
       </div>
       
       {/* Shadow effect and separator at bottom */}

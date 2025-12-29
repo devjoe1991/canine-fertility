@@ -5,23 +5,19 @@ import { motion } from "framer-motion";
 const features = [
   {
     title: "Knowledgeable",
-    description: "Over 30 years experience in canine reproduction",
-    detail: "We cover every aspect of dog breeding and have a large client base across the UK with studs available on request.",
+    description: "Over 10 years experience in canine reproduction. We cover every aspect of dog breeding and have a large client base across the UK with stud dogs available on request.",
   },
   {
     title: "Trustworthy",
-    description: "Friendly and honest service with consistently accurate results",
-    detail: "Late or last minute emergency appointments are acceptable. We're here when you need us most.",
+    description: "Friendly and honest service with consistently accurate results. Late or last minute emergency appointments are acceptable - we're here when you need us most.",
   },
   {
     title: "Convenient",
-    description: "Flexible service options for your convenience",
-    detail: "We accept progesterone test samples by mail for next day results, and live chilled semen from anywhere in the world is deliverable to us for insemination.",
+    description: "We accept progesterone test & semen samples for immediate results. As well as offering a chilling and shipping service worldwide.",
   },
   {
     title: "Wellbeing",
-    description: "Safety is our priority",
-    detail: "It's important to us that our clients are comfortable and that their pets feel as relaxed and at home as can possibly be while you are with us. We take as much time and care as needed to ensure this.",
+    description: "Safety is our priority. We ensure our clients and their pets feel comfortable and relaxed. We take as much time and care as needed.",
   },
 ];
 
@@ -58,14 +54,11 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ type: "spring", damping: 25, stiffness: 200, delay: index * 0.1 }}
             >
-              <h3 className="font-serif text-xl font-semibold text-[#002147] mb-2">
+              <h3 className="font-serif text-xl font-semibold text-[#002147] mb-3">
                 {feature.title}
               </h3>
-              <p className="text-[#D4AF37] font-medium mb-3 text-sm">
-                {feature.description}
-              </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                {feature.detail}
+                {feature.description}
               </p>
             </motion.div>
           ))}
