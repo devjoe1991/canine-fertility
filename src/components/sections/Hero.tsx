@@ -32,18 +32,10 @@ export default function Hero() {
           Capital Canine Fertility
         </motion.h1>
         <motion.p
-          className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.4 }}
-        >
-          Professional Canine Breeding Services in the Heart of the Capital
-        </motion.p>
-        <motion.p
           className="text-lg md:text-xl text-white/80 mb-12 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.5 }}
+          transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.4 }}
         >
           Professional Canine Fertility Services across London, Essex & Herts
         </motion.p>
