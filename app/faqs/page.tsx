@@ -71,16 +71,6 @@ const FAQ_GROUPS: FaqGroup[] = [
         answer:
           "Yes. We accept live chilled semen samples from anywhere in the world and prepare them for insemination on arrival.",
       },
-      {
-        question: "Can you carry out artificial insemination with frozen semen?",
-        answer:
-          "Yes. We work with fresh, chilled and frozen samples. For frozen we coordinate with the storage facility on shipping and timing.",
-      },
-      {
-        question: "Do you offer surgical artificial insemination?",
-        answer:
-          "We carry out vaginal insemination, which suits the majority of cases. For situations that need a surgical approach we refer to a veterinary surgery and stay involved through the planning.",
-      },
     ],
   },
   {
@@ -90,11 +80,6 @@ const FAQ_GROUPS: FaqGroup[] = [
         question: "Can you attend an emergency whelping at short notice?",
         answer:
           "We accept late and last-minute emergency appointments where availability allows. Please get in touch as soon as you suspect a problem.",
-      },
-      {
-        question: "What if a caesarean is needed?",
-        answer:
-          "If we identify a complication that needs surgical intervention, we refer to a local veterinary surgery for the procedure and continue to support you through aftercare.",
       },
       {
         question: "Do you help with hand-feeding orphaned or under-weight pups?",

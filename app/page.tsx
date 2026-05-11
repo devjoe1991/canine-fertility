@@ -3,7 +3,6 @@ import About from "@/components/sections/About";
 import ServiceNavigator from "@/components/sections/ServiceNavigator";
 import ProcessStrip from "@/components/sections/ProcessStrip";
 import AreasStrip from "@/components/sections/AreasStrip";
-import TrustStrip from "@/components/sections/TrustStrip";
 import WhatsAppCTA from "@/components/cta/WhatsAppCTA";
 import JsonLd from "@/components/seo/JsonLd";
 import Link from "next/link";
@@ -23,7 +22,6 @@ export default function Home() {
     <main className="min-h-screen bg-[#fafafa]">
       <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }])} />
       <Hero />
-      <TrustStrip />
       <ProcessStrip />
       <About compact />
       <ServiceNavigator services={services} limit={6} />

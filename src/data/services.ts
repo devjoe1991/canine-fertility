@@ -26,7 +26,7 @@ export const services: ServiceData[] = [
       "Same-day blood progesterone analysis to pinpoint the optimum mating window. Postal samples accepted.",
     price: "From £45",
     longDescription:
-      "Progesterone testing is the most reliable way to pinpoint ovulation in the bitch. We run blood samples in-house and return results the same day, so you can plan a natural mating or artificial insemination at the optimum point in her cycle. Cytology is offered alongside testing for added confidence. If you are outside London, Essex or Hertfordshire you can post in a sample and we will turn it around as soon as it arrives.",
+      "Progesterone testing is the most reliable way to pinpoint ovulation in the bitch. We process samples and return results the same day, so you can plan mating at the optimum point in her cycle. Cytology is offered alongside testing for added confidence. If you are outside London, Essex or Hertfordshire you can post in a sample and we will turn it around as soon as it arrives.",
     whatIncluded: [
       "Blood progesterone level measurement",
       "Cytology where appropriate",
@@ -144,36 +144,6 @@ export const services: ServiceData[] = [
     relatedIds: ["sperm-analysis", "progesterone"],
   },
   {
-    id: "artificial-insemination",
-    title: "Artificial Insemination",
-    description:
-      "Artificial insemination for all breeds and sizes, using fresh, chilled or frozen semen, timed to the bitch's progesterone results.",
-    details:
-      "Artificial insemination for all breeds and sizes, with timing driven by progesterone results. Compatible with fresh, chilled and frozen samples.",
-    price: "From £180",
-    longDescription:
-      "Artificial insemination opens up matches that would not be possible otherwise, whether the stud is at a distance, the bitch will not stand for a natural mating, or you are working with frozen semen. We carry out vaginal insemination for the majority of cases and time the appointment from progesterone testing so the sample arrives at the right point in the cycle.",
-    whatIncluded: [
-      "Vaginal insemination",
-      "Compatible with fresh, chilled or frozen semen",
-      "Timing planned from progesterone results",
-      "Repeat insemination across the breeding window where appropriate",
-    ],
-    faqs: [
-      {
-        question: "Which type of semen can you work with?",
-        answer:
-          "Fresh, chilled or frozen. For frozen samples we will coordinate with the storage facility on shipping and timing.",
-      },
-      {
-        question: "How is the appointment timed?",
-        answer:
-          "We use progesterone results to identify the optimum window and book the insemination from there, usually one to three days after the LH surge.",
-      },
-    ],
-    relatedIds: ["progesterone", "chilled-semen"],
-  },
-  {
     id: "stud-handling",
     title: "Stud Dog Services",
     description:
@@ -225,11 +195,6 @@ export const services: ServiceData[] = [
         answer:
           "We accept late and last-minute emergency appointments where availability allows. Please call as soon as you suspect a problem.",
       },
-      {
-        question: "What if a caesarean is needed?",
-        answer:
-          "If we identify a complication that needs surgical intervention, we refer to a local veterinary surgery for the procedure and continue to support you through aftercare.",
-      },
     ],
     relatedIds: ["ultrasound", "puppy-care"],
   },
@@ -266,12 +231,12 @@ export const services: ServiceData[] = [
     id: "puppy-care",
     title: "Puppy Care Guidance",
     description:
-      "Hands-on guidance for hand-feeding, under-weight pups and common early-life problems like fading puppy syndrome.",
+      "Hands-on guidance for hand-feeding, under-weight pups and common early-life problems.",
     details:
       "Practical advice on hand-feeding, nutrition and common problems during the first weeks of a puppy's life.",
     price: "From £50",
     longDescription:
-      "The first weeks shape a puppy's health for life. We help with hand-feeding routines for orphaned or under-weight pups, nutrition planning, weight tracking and dealing with common issues like fading puppy syndrome. Each consultation is tailored to the litter in front of us.",
+      "The first weeks shape a puppy's health for life. We help with hand-feeding routines for orphaned or under-weight pups, nutrition planning, weight tracking and dealing with common early-life issues. Each consultation is tailored to the litter in front of us.",
     whatIncluded: [
       "Hand-feeding plans for under-weight or orphaned puppies",
       "Nutrition guidance",

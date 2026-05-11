@@ -40,8 +40,8 @@ export default function AboutPage() {
               care in the early weeks of life.
             </p>
             <p>
-              Our work is hands-on. We run progesterone testing in-house with
-              same-day results, scan for pregnancy between days 28 and 35,
+              Our work is hands-on. We run progesterone testing with
+              instant results, scan for pregnancy between days 28 and 35,
               support stud dogs through mating and step in when a whelping
               needs help.
             </p>
