@@ -93,7 +93,7 @@ export default async function AreaPage({ params }: PageProps) {
                   {s.description}
                 </p>
                 {s.price && (
-                  <p className="text-sm font-semibold text-[#D4AF37]">
+                  <p className="text-sm font-semibold text-[#8a6d12]">
                     {s.price}
                   </p>
                 )}

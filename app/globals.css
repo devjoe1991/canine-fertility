@@ -5,6 +5,9 @@
   --foreground: #002147;
   --primary-blue: #002147;
   --accent-gold: #D4AF37;
+  /* Darker variant of gold that passes WCAG AA for body text on white.
+     Use --accent-gold for backgrounds/large display only. */
+  --accent-gold-accessible: #8a6d12;
 }
 
 @theme inline {
@@ -12,6 +15,7 @@
   --color-foreground: var(--foreground);
   --color-primary-blue: var(--primary-blue);
   --color-accent-gold: var(--accent-gold);
+  --color-accent-gold-accessible: var(--accent-gold-accessible);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -20,6 +24,13 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Sitewide focus ring for keyboard users. Components can override locally. */
+*:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 @layer utilities {

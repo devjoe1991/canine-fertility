@@ -291,10 +291,10 @@ export default function ServiceNavigator({
   };
 
   return (
-    <section id="services" className="py-20 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "0px", overflowX: "hidden", width: "100%", maxWidth: "100vw" }}>
+    <section id="services" className="py-16 sm:py-20 bg-[#fafafa]" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "0px", overflowX: "hidden", width: "100%", maxWidth: "100vw" }}>
       <div className="max-w-7xl mx-auto px-4" style={{ height: "auto", minHeight: sectionHeight ? `${sectionHeight + 100}px` : "fit-content", overflowY: "visible", overflowX: "hidden", width: "100%", maxWidth: "100%" }}>
         <motion.h2
-          className="font-serif text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
+          className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

@@ -57,7 +57,7 @@ export default function AreasServedPage() {
                 <p className="text-sm text-gray-600 leading-relaxed mb-4">
                   {a.blurb}
                 </p>
-                <span className="text-[#D4AF37] font-semibold text-sm">
+                <span className="text-[#8a6d12] font-semibold text-sm">
                   Learn more →
                 </span>
               </Link>

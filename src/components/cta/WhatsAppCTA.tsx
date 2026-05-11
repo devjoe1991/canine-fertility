@@ -24,7 +24,7 @@ const variantClasses: Record<Variant, string> = {
   primary:
     "bg-[#D4AF37] text-[#002147] hover:bg-[#C4A027] border-2 border-[#D4AF37] hover:border-[#C4A027] shadow-lg",
   outline:
-    "bg-transparent text-[#002147] hover:bg-[#D4AF37] hover:text-white border-2 border-[#D4AF37]",
+    "bg-transparent text-[#002147] hover:bg-[#D4AF37] hover:text-[#002147] border-2 border-[#D4AF37]",
   ghost:
     "bg-transparent text-[#D4AF37] hover:text-[#C4A027] border-2 border-transparent",
 };

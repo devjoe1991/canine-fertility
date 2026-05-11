@@ -34,7 +34,7 @@ export default function Hero({
 
       <div className={`relative z-20 max-w-4xl ${alignClass}`}>
         <motion.h1
-          className="font-serif text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-4 sm:mb-6"
+          className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 sm:mb-6"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{

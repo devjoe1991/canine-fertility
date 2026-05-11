@@ -137,14 +137,14 @@ export default function Footer() {
               {BUSINESS.hours.map((h) => (
                 <li key={h.label}>{h.label}</li>
               ))}
-              <li className="italic text-gray-400 pt-1">
+              <li className="italic text-gray-300 pt-1">
                 {BUSINESS.hoursNote}
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-sm text-gray-400">
+        <div className="border-t border-gray-700 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-sm text-gray-300">
           <p>
             © {new Date().getFullYear()} {BUSINESS.name}. All rights reserved.
           </p>

@@ -146,7 +146,7 @@ export default function FaqsPage() {
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#002147] mb-4 sm:mb-5">
                 {group.heading}
               </h2>
-              <ServiceFAQ faqs={group.items} />
+              <ServiceFAQ faqs={group.items} defaultOpenIndex={null} />
             </div>
           ))}
         </div>

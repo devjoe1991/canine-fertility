@@ -46,7 +46,7 @@ export default function LiquidCard({ service, index, href }: LiquidCardProps) {
         {service.description}
       </p>
       {service.price && (
-        <p className="text-sm font-semibold text-[#D4AF37] mb-4">
+        <p className="text-sm font-semibold text-[#8a6d12] mb-4">
           {service.price}
         </p>
       )}

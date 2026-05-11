@@ -99,7 +99,7 @@ export default function Header() {
               className="object-contain w-9 h-9 sm:w-11 sm:h-11"
               priority
             />
-            <span className="font-serif text-base sm:text-xl font-semibold text-[#002147] truncate hidden xs:block sm:block">
+            <span className="font-serif text-sm sm:text-xl font-semibold text-[#002147] truncate">
               <span className="hidden md:inline">{BUSINESS.name}</span>
               <span className="md:hidden">{BUSINESS.shortName}</span>
             </span>
@@ -129,7 +129,9 @@ export default function Header() {
             />
           </div>
 
-          {/* Mobile / Tablet: compact WhatsApp + hamburger */}
+          {/* Mobile / Tablet: compact WhatsApp + hamburger.
+              Below sm we rely on the FloatingWhatsApp button to avoid
+              header crowding at 360px viewports. */}
           <div className="flex items-center gap-2 lg:hidden">
             <WhatsAppCTA
               variant="primary"
@@ -138,16 +140,10 @@ export default function Header() {
               withIcon={true}
               className="hidden sm:inline-flex"
             />
-            <WhatsAppCTA
-              variant="primary"
-              size="sm"
-              label=""
-              withIcon={true}
-              className="sm:hidden !px-3"
-            />
             <button
+              type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex flex-col gap-1.5 p-2 -mr-2"
+              className="flex flex-col gap-1.5 p-2 -mr-2 hover:bg-gray-100 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D4AF37] focus-visible:outline-offset-2"
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
             >

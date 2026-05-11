@@ -10,10 +10,15 @@ interface FAQItem {
 
 interface ServiceFAQProps {
   faqs: FAQItem[];
+  /** Index opened by default. Pass null to collapse all on mount. */
+  defaultOpenIndex?: number | null;
 }
 
-export default function ServiceFAQ({ faqs }: ServiceFAQProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+export default function ServiceFAQ({
+  faqs,
+  defaultOpenIndex = 0,
+}: ServiceFAQProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(defaultOpenIndex);
 
   return (
     <div className="space-y-3">

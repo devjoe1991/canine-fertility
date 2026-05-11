@@ -6,7 +6,7 @@ import { AREAS } from "@/lib/constants";
 
 export default function AreasStrip() {
   return (
-    <section className="py-16 sm:py-20 px-4 bg-[#fafafa]">
+    <section className="py-16 sm:py-20 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#002147] mb-3">
@@ -42,7 +42,7 @@ export default function AreasStrip() {
                 <p className="text-sm text-gray-600 leading-relaxed mb-3">
                   {a.blurb}
                 </p>
-                <span className="text-[#D4AF37] font-semibold text-sm">
+                <span className="text-[#8a6d12] font-semibold text-sm">
                   Learn more →
                 </span>
               </Link>

@@ -44,7 +44,7 @@ export default function ServicesGridSection() {
                 </p>
                 <div className="flex justify-between items-center pt-2">
                   {s.price && (
-                    <span className="text-sm font-semibold text-[#D4AF37]">
+                    <span className="text-sm font-semibold text-[#8a6d12]">
                       {s.price}
                     </span>
                   )}
