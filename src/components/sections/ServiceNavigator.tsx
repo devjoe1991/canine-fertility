@@ -5,6 +5,7 @@ import { motion, useMotionValue, type PanInfo } from "framer-motion";
 import LiquidCard from "@/components/ui/LiquidCard";
 import ServiceProgressLine from "@/components/ui/ServiceProgressLine";
 import type { ServiceData } from "@/data/services";
+import { haptic } from "@/lib/haptics";
 
 interface ServiceNavigatorProps {
   services: ServiceData[];
@@ -21,6 +22,10 @@ export default function ServiceNavigator({
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  /** Last index that fired a haptic tick, so we don't repeat on same card. */
+  const lastHapticIndexRef = useRef(0);
+  /** Index when drag started, used to know if snap actually moved. */
+  const dragStartIndexRef = useRef(0);
   const [maxScroll, setMaxScroll] = useState(0);
   const [canScroll, setCanScroll] = useState(false);
   const [cardWidth, setCardWidth] = useState(320);
@@ -190,13 +195,27 @@ export default function ServiceNavigator({
     
     if (clampedIndex !== activeIndex) {
       setActiveIndex(clampedIndex);
+      // Tick once per card boundary crossed during live drag.
+      if (clampedIndex !== lastHapticIndexRef.current) {
+        haptic("tick");
+        lastHapticIndexRef.current = clampedIndex;
+      }
     }
-    
+
     // Calculate scroll progress (0 to 1)
     if (maxScroll > 0) {
       const progress = Math.max(0, Math.min(1, Math.abs(clampedX) / maxScroll));
       setScrollProgress(progress);
     }
+  };
+
+  const handleDragStart = () => {
+    if (!containerRef.current || !canScroll) return;
+    const currentX = dragX.get();
+    const clampedX = Math.max(-maxScroll, Math.min(0, currentX));
+    const idx = Math.round(Math.abs(clampedX) / cardWithGap);
+    dragStartIndexRef.current = idx;
+    lastHapticIndexRef.current = idx;
   };
 
   const handleDragEnd = (
@@ -248,7 +267,16 @@ export default function ServiceNavigator({
     const finalX = Math.max(-maxScroll, Math.min(0, targetX));
     setActiveIndex(targetIndex);
     dragX.set(finalX);
-    
+
+    // Snap haptic: tick only if the snapped index moved at all.
+    if (targetIndex !== dragStartIndexRef.current) {
+      haptic("tick");
+    } else if (Math.abs(velocity) > 200) {
+      // Hard swipe that didn't move (boundary). Soft bump.
+      haptic("soft");
+    }
+    lastHapticIndexRef.current = targetIndex;
+
     // Update progress after drag ends
     if (maxScroll > 0) {
       const progress = Math.max(0, Math.min(1, Math.abs(finalX) / maxScroll));
@@ -339,6 +367,7 @@ export default function ServiceNavigator({
               power: 0.4,
               timeConstant: 200
             }}
+            onDragStart={handleDragStart}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
           >
