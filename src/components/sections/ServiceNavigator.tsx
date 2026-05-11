@@ -32,6 +32,9 @@ export default function ServiceNavigator({
   const [totalDots, setTotalDots] = useState(0);
   const [sectionHeight, setSectionHeight] = useState<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  /** Bumped on every snap where haptic() did not fire. Drives the progress
+   *  line scale pulse so desktop and iOS Safari still get visual feedback. */
+  const [tickKey, setTickKey] = useState(0);
 
   const gap = 24;
   const cardWithGap = cardWidth + gap;
@@ -197,7 +200,8 @@ export default function ServiceNavigator({
       setActiveIndex(clampedIndex);
       // Tick once per card boundary crossed during live drag.
       if (clampedIndex !== lastHapticIndexRef.current) {
-        haptic("tick");
+        const fired = haptic("tick");
+        if (!fired) setTickKey((k) => k + 1);
         lastHapticIndexRef.current = clampedIndex;
       }
     }
@@ -270,10 +274,12 @@ export default function ServiceNavigator({
 
     // Snap haptic: tick only if the snapped index moved at all.
     if (targetIndex !== dragStartIndexRef.current) {
-      haptic("tick");
+      const fired = haptic("tick");
+      if (!fired) setTickKey((k) => k + 1);
     } else if (Math.abs(velocity) > 200) {
       // Hard swipe that didn't move (boundary). Soft bump.
-      haptic("soft");
+      const fired = haptic("soft");
+      if (!fired) setTickKey((k) => k + 1);
     }
     lastHapticIndexRef.current = targetIndex;
 
@@ -386,7 +392,11 @@ export default function ServiceNavigator({
                   boxSizing: "border-box",
                 }}
               >
-                <LiquidCard service={service} index={index} />
+                <LiquidCard
+                  service={service}
+                  index={index}
+                  href={`/services/${service.id}`}
+                />
               </div>
             ))}
           </motion.div>
@@ -413,10 +423,11 @@ export default function ServiceNavigator({
               marginTop: "0",
               marginBottom: "0",
             }}>
-              <ServiceProgressLine 
-                total={totalDots} 
+              <ServiceProgressLine
+                total={totalDots}
                 activeIndex={activeIndex}
                 progress={scrollProgress}
+                tickKey={tickKey}
               />
             </div>
           )}

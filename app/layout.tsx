@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import { UIProvider } from "@/context/UIContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import GlobalBottomSheet from "@/components/overlay/GlobalBottomSheet";
 import FloatingWhatsApp from "@/components/cta/FloatingWhatsApp";
 import JsonLd from "@/components/seo/JsonLd";
 import { localBusinessSchema, websiteSchema } from "@/lib/schema";
@@ -100,13 +98,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <JsonLd data={[localBusinessSchema(), websiteSchema()]} />
-        <UIProvider>
-          <Header />
-          {children}
-          <Footer />
-          <GlobalBottomSheet />
-          <FloatingWhatsApp />
-        </UIProvider>
+        <Header />
+        {children}
+        <Footer />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

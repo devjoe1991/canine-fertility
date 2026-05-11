@@ -1,9 +1,10 @@
 /**
  * Lightweight haptic feedback helpers.
  *
- * Uses the Web Vibration API (mobile only — desktop browsers no-op).
- * Each tick is intentionally short so rapid snaps feel like a click track
- * rather than a buzz. Respects prefers-reduced-motion.
+ * Uses the Web Vibration API (Android Chrome/Firefox). iOS Safari and
+ * desktop browsers do not implement `navigator.vibrate`. Callers can read
+ * the boolean return to fall back to a visual tick where vibration was
+ * not delivered. Respects prefers-reduced-motion.
  */
 
 type HapticIntensity = "tick" | "soft" | "medium";
@@ -19,9 +20,14 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 }
 
-export function haptic(intensity: HapticIntensity = "tick"): void {
-  if (typeof navigator === "undefined") return;
-  if (typeof navigator.vibrate !== "function") return;
-  if (prefersReducedMotion()) return;
-  navigator.vibrate(DURATIONS[intensity]);
+/**
+ * Trigger a haptic tick.
+ * Returns `true` if the underlying `navigator.vibrate` call accepted the
+ * request, `false` otherwise (no API support, server, or reduced motion).
+ */
+export function haptic(intensity: HapticIntensity = "tick"): boolean {
+  if (typeof navigator === "undefined") return false;
+  if (typeof navigator.vibrate !== "function") return false;
+  if (prefersReducedMotion()) return false;
+  return navigator.vibrate(DURATIONS[intensity]);
 }
