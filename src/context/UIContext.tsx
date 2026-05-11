@@ -1,15 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-
-interface ServiceData {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  details: string;
-  price?: string;
-}
+import type { ServiceData } from "@/data/services";
 
 interface UIContextType {
   isBottomSheetOpen: boolean;
@@ -22,7 +14,8 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 
 export function UIProvider({ children }: { children: ReactNode }) {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [bottomSheetContent, setBottomSheetContent] = useState<ServiceData | null>(null);
+  const [bottomSheetContent, setBottomSheetContent] =
+    useState<ServiceData | null>(null);
 
   const openBottomSheet = (content: ServiceData) => {
     setBottomSheetContent(content);
@@ -55,6 +48,3 @@ export function useUI() {
   }
   return context;
 }
-
-
-

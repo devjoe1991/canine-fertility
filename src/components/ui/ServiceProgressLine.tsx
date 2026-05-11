@@ -9,7 +9,7 @@ interface ServiceProgressLineProps {
   progress?: number; // Progress from 0 to 1
 }
 
-export default function ServiceProgressLine({ total, activeIndex, isAbsolute = false, progress = 0 }: ServiceProgressLineProps) {
+export default function ServiceProgressLine({ total, progress = 0 }: ServiceProgressLineProps) {
   // Calculate line width based on total positions
   const lineWidth = total > 0 ? `${100 / total}%` : "0%";
   // Calculate line position based on progress

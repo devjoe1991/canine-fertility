@@ -1,34 +1,31 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion, useMotionValue, type PanInfo } from "framer-motion";
 import LiquidCard from "@/components/ui/LiquidCard";
 import ServiceProgressLine from "@/components/ui/ServiceProgressLine";
-
-interface ServiceData {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  details: string;
-  price?: string;
-}
+import type { ServiceData } from "@/data/services";
 
 interface ServiceNavigatorProps {
   services: ServiceData[];
+  /** Optional cap on the number of services to render (e.g. homepage preview). */
+  limit?: number;
 }
 
-export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
+export default function ServiceNavigator({
+  services: allServices,
+  limit,
+}: ServiceNavigatorProps) {
+  const services =
+    limit && limit > 0 ? allServices.slice(0, limit) : allServices;
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [maxScroll, setMaxScroll] = useState(0);
   const [canScroll, setCanScroll] = useState(false);
   const [cardWidth, setCardWidth] = useState(320);
-  const [visibleCardsCount, setVisibleCardsCount] = useState(0);
   const [totalDots, setTotalDots] = useState(0);
   const [sectionHeight, setSectionHeight] = useState<number | null>(null);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const gap = 24;
@@ -40,10 +37,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   useEffect(() => {
     // Hydration fix: Wait for client-side mount before calculations
     if (typeof window === "undefined") return;
-    
-    // Detect touch device
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    
+
     // Set card width based on window size (client-side only)
     const updateCardWidth = () => {
       setCardWidth(window.innerWidth < 768 ? 280 : 320);
@@ -76,10 +70,9 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
         const container = containerRef.current;
         const containerWidth = container.clientWidth;
         
-        // Calculate total width of all cards including gaps and padding
-        const paddingRight = 20; // Match the padding-right on the slider track
-        const totalCardsWidth = services.length * cardWidth + (services.length - 1) * gap + paddingRight;
-        
+        // Match the padding-right on the slider track
+        const paddingRight = 20;
+
         // Calculate the exact position where the last card's right edge aligns with container's right edge
         // This ensures the last card is fully visible, just like the first card is at position 0
         // Position of last card's left edge: (services.length - 1) * cardWithGap
@@ -95,8 +88,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
         
         // Calculate how many cards are visible and how many dots we need
         const cardsVisible = Math.floor(containerWidth / cardWithGap);
-        setVisibleCardsCount(cardsVisible);
-        
+
         // Calculate dots needed: number of swipe positions
         // If 8 cards and 4 visible, we have 5 positions (0-4)
         if (maxScrollValue > 10 && cardsVisible > 0) {
@@ -165,6 +157,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
         window.removeEventListener("resize", handleResize);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services.length, cardWidth, dragX]);
   
   // Update progress when dragX or maxScroll changes
@@ -178,7 +171,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     }
   }, [dragX, maxScroll]);
 
-  const handleDrag = (event: any, info: any) => {
+  const handleDrag = () => {
     if (!containerRef.current || !canScroll) return;
     
     // Let Framer Motion handle the drag position automatically
@@ -206,7 +199,10 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     }
   };
 
-  const handleDragEnd = (event: any, info: any) => {
+  const handleDragEnd = (
+    _event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => {
     if (!containerRef.current || !canScroll || maxScroll <= 0) return;
     
     const currentX = dragX.get();
@@ -317,7 +313,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               justifyContent: "flex-start",
               position: "relative",
               touchAction: "pan-x",
-              display: "flex !important" as any,
+              display: "flex !important" as unknown as "flex",
               alignItems: "stretch",
               height: "auto",
               minHeight: "0",
