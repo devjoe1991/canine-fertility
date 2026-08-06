@@ -1,150 +1,362 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { BUSINESS, NAV_ITEMS, type NavItem } from "@/lib/constants";
+import WhatsAppCTA from "@/components/cta/WhatsAppCTA";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<Set<string>>(new Set());
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Close desktop dropdowns on outside click / Escape
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        headerRef.current &&
+        !headerRef.current.contains(e.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    }
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpenDropdown(null);
+        setIsMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  // Lock body scroll while mobile menu is open
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (isMenuOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [isMenuOpen]);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setMobileExpanded(new Set());
+  };
+
+  const toggleMobileSection = (label: string) => {
+    setMobileExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+  };
 
   return (
-    <>
-      {/* Top Bar */}
-      <div className="bg-[#002147] text-white py-2 px-4 text-sm">
+    <header ref={headerRef} className="sticky top-0 z-50">
+      {/* Top Bar: slim, no phone number displayed */}
+      <div className="bg-[#002147] text-white py-2 px-4 text-xs sm:text-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <span className="text-[#D4AF37] font-medium">Capital Canine</span>
-          <a 
-            href="tel:+447377677270" 
-            className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#D4AF37] text-[#002147] font-semibold rounded-sm hover:bg-[#C4A027] transition-colors"
-          >
-            <svg 
-              className="w-4 h-4" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" 
-              />
-            </svg>
-            +44 7377 677270
-          </a>
+          <span className="text-[#D4AF37] font-medium">
+            {BUSINESS.shortName}
+          </span>
+          <span className="text-white/80 hidden sm:inline">
+            {BUSINESS.tagline}
+          </span>
         </div>
       </div>
 
       {/* Sticky Header */}
-      <motion.header
-        className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200/50"
+      <motion.div
+        className="backdrop-blur-md bg-white/90 border-b border-gray-200/50"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
       >
-        <nav className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
+        <nav className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center gap-3">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 sm:gap-3 min-w-0"
+            onClick={closeMenu}
+          >
             <Image
-              src="/mainlogo.png"
-              alt="Capital Canine Fertility Logo"
-              width={50}
-              height={50}
-              className="object-contain"
+              src={BUSINESS.logoPath}
+              alt={`${BUSINESS.name} logo`}
+              width={44}
+              height={44}
+              className="object-contain w-9 h-9 sm:w-11 sm:h-11"
+              priority
             />
-            <div className="font-serif text-xl font-semibold text-[#002147] hidden sm:block">
-              Capital Canine Fertility
-            </div>
-          </div>
+            <span className="font-serif text-sm sm:text-xl font-semibold text-[#002147] truncate">
+              <span className="hidden md:inline">{BUSINESS.name}</span>
+              <span className="md:hidden">{BUSINESS.shortName}</span>
+            </span>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex gap-8 items-center">
-            <a href="#services" className="text-[#002147] hover:text-[#D4AF37] transition-colors">
-              Services
-            </a>
-            <a href="#about" className="text-[#002147] hover:text-[#D4AF37] transition-colors">
-              About
-            </a>
-            <a href="#contact" className="text-[#002147] hover:text-[#D4AF37] transition-colors">
-              Contact
-            </a>
-            <a 
-              href="mailto:capitalcaninefertility@gmail.com?subject=Enquiry from Website"
-              className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm inline-block"
-            >
-              Enquire Now
-            </a>
+          <div className="hidden lg:flex gap-6 items-center">
+            {NAV_ITEMS.map((item) => (
+              <DesktopNavItem
+                key={item.label}
+                item={item}
+                isOpen={openDropdown === item.label}
+                onOpen={() => setOpenDropdown(item.label)}
+                onClose={() => setOpenDropdown(null)}
+                onToggle={() =>
+                  setOpenDropdown(
+                    openDropdown === item.label ? null : item.label,
+                  )
+                }
+              />
+            ))}
+            <WhatsAppCTA
+              variant="outline"
+              size="sm"
+              label="Enquire"
+              withIcon={true}
+            />
           </div>
 
-          {/* Mobile Hamburger Menu */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden flex flex-col gap-1.5 p-2"
-            aria-label="Toggle menu"
-          >
-            <motion.span
-              className="w-6 h-0.5 bg-[#D4AF37]"
-              animate={isMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+          {/* Mobile / Tablet: compact WhatsApp + hamburger.
+              Below sm we rely on the FloatingWhatsApp button to avoid
+              header crowding at 360px viewports. */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <WhatsAppCTA
+              variant="primary"
+              size="sm"
+              label="WhatsApp"
+              withIcon={true}
+              className="hidden sm:inline-flex"
             />
-            <motion.span
-              className="w-6 h-0.5 bg-[#D4AF37]"
-              animate={isMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            />
-            <motion.span
-              className="w-6 h-0.5 bg-[#D4AF37]"
-              animate={isMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            />
-          </button>
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex flex-col gap-1.5 p-2 -mr-2 hover:bg-gray-100 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#D4AF37] focus-visible:outline-offset-2"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+            >
+              <motion.span
+                className="block w-6 h-0.5 bg-[#002147]"
+                animate={
+                  isMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }
+                }
+                transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              />
+              <motion.span
+                className="block w-6 h-0.5 bg-[#002147]"
+                animate={
+                  isMenuOpen ? { opacity: 0 } : { opacity: 1 }
+                }
+                transition={{ duration: 0.15 }}
+              />
+              <motion.span
+                className="block w-6 h-0.5 bg-[#002147]"
+                animate={
+                  isMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }
+                }
+                transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              />
+            </button>
+          </div>
         </nav>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Drawer */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              className="md:hidden border-t border-gray-200/50 bg-white/95 backdrop-blur-md"
+              className="lg:hidden border-t border-gray-200/50 bg-white/95 backdrop-blur-md overflow-hidden"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
             >
-              <div className="px-4 py-6 flex flex-col gap-4">
-                <a
-                  href="#services"
-                  className="text-[#002147] hover:text-[#D4AF37] transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Services
-                </a>
-                <a
-                  href="#about"
-                  className="text-[#002147] hover:text-[#D4AF37] transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  About
-                </a>
-                <a
-                  href="#contact"
-                  className="text-[#002147] hover:text-[#D4AF37] transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Contact
-                </a>
-                <a 
-                  href="mailto:capitalcaninefertility@gmail.com?subject=Enquiry from Website"
-                  className="px-6 py-2 border-2 border-[#D4AF37] text-[#002147] hover:bg-[#D4AF37] hover:text-white transition-colors rounded-sm w-full mt-2 inline-block text-center"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Enquire Now
-                </a>
+              <div className="px-4 py-4 max-h-[calc(100vh-120px)] overflow-y-auto">
+                <ul className="flex flex-col">
+                  {NAV_ITEMS.map((item) => {
+                    const expanded = mobileExpanded.has(item.label);
+                    const hasChildren =
+                      item.children && item.children.length > 0;
+                    return (
+                      <li
+                        key={item.label}
+                        className="border-b border-gray-100 last:border-b-0"
+                      >
+                        <div className="flex items-center">
+                          <Link
+                            href={item.href}
+                            onClick={closeMenu}
+                            className="flex-1 text-[#002147] hover:text-[#D4AF37] transition-colors py-3 text-base"
+                          >
+                            {item.label}
+                          </Link>
+                          {hasChildren && (
+                            <button
+                              onClick={() => toggleMobileSection(item.label)}
+                              className="p-3 -mr-3 text-[#002147]"
+                              aria-label={
+                                expanded
+                                  ? `Collapse ${item.label}`
+                                  : `Expand ${item.label}`
+                              }
+                              aria-expanded={expanded}
+                            >
+                              <motion.svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                animate={{ rotate: expanded ? 180 : 0 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                <path
+                                  d="M4 6l4 4 4-4"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </motion.svg>
+                            </button>
+                          )}
+                        </div>
+                        <AnimatePresence>
+                          {hasChildren && expanded && (
+                            <motion.ul
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden pl-4 pb-2"
+                            >
+                              {item.children!.map((c) => (
+                                <li key={c.href}>
+                                  <Link
+                                    href={c.href}
+                                    onClick={closeMenu}
+                                    className="block py-2 text-sm text-gray-700 hover:text-[#D4AF37] transition-colors"
+                                  >
+                                    {c.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </motion.ul>
+                          )}
+                        </AnimatePresence>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className="pt-4">
+                  <WhatsAppCTA
+                    variant="primary"
+                    size="md"
+                    label="Enquire on WhatsApp"
+                    fullWidth
+                  />
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.header>
-    </>
+      </motion.div>
+    </header>
   );
 }
 
+function DesktopNavItem({
+  item,
+  isOpen,
+  onOpen,
+  onClose,
+  onToggle,
+}: {
+  item: NavItem;
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  onToggle: () => void;
+}) {
+  const hasChildren = item.children && item.children.length > 0;
+
+  if (!hasChildren) {
+    return (
+      <Link
+        href={item.href}
+        className="text-[#002147] hover:text-[#D4AF37] transition-colors text-sm"
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={onOpen}
+      onMouseLeave={onClose}
+    >
+      <button
+        onClick={onToggle}
+        className="text-[#002147] hover:text-[#D4AF37] transition-colors text-sm inline-flex items-center gap-1"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+      >
+        {item.label}
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+          <path
+            d="M3 4.5l3 3 3-3"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-0 mt-2 min-w-[240px] bg-white border border-gray-200 rounded-sm shadow-lg py-2"
+            role="menu"
+          >
+            <Link
+              href={item.href}
+              className="block px-4 py-2 text-sm text-[#002147] hover:bg-[#fafafa] hover:text-[#D4AF37] font-medium"
+              onClick={onClose}
+            >
+              All {item.label}
+            </Link>
+            <div className="border-t border-gray-100 my-1" />
+            {item.children!.map((c) => (
+              <Link
+                key={c.href}
+                href={c.href}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#fafafa] hover:text-[#D4AF37]"
+                onClick={onClose}
+                role="menuitem"
+              >
+                {c.label}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

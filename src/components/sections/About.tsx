@@ -21,12 +21,24 @@ const features = [
   },
 ];
 
-export default function About() {
+interface AboutProps {
+  compact?: boolean;
+}
+
+export default function About({ compact = false }: AboutProps) {
+  const visibleFeatures = compact ? features.slice(0, 4) : features;
+  const gridCols = compact
+    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+    : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+
   return (
-    <section id="about" className="py-20 px-4 bg-gradient-to-b from-[#fafafa] to-white">
+    <section
+      id="about"
+      className="py-16 sm:py-20 px-4 bg-gradient-to-b from-[#fafafa] to-white"
+    >
       <div className="max-w-7xl mx-auto">
         <motion.h2
-          className="font-serif text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
+          className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#002147] text-center mb-3 sm:mb-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -35,26 +47,38 @@ export default function About() {
           Why Choose Us
         </motion.h2>
         <motion.p
-          className="text-center text-gray-600 mb-16 max-w-2xl mx-auto"
+          className="text-center text-gray-600 mb-10 sm:mb-16 max-w-2xl mx-auto text-sm sm:text-base px-2"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ type: "spring", damping: 25, stiffness: 200, delay: 0.1 }}
+          transition={{
+            type: "spring",
+            damping: 25,
+            stiffness: 200,
+            delay: 0.1,
+          }}
         >
-          Whether you're an experienced breeder or having a one off family pet litter, we will do our utmost to ensure you're looked after every step of the way.
+          Whether you&apos;re an experienced breeder or having a one off family
+          pet litter, we will do our utmost to ensure you&apos;re looked after
+          every step of the way.
         </motion.p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
+        <div className={`grid ${gridCols} gap-6 sm:gap-8`}>
+          {visibleFeatures.map((feature, index) => (
             <motion.div
               key={feature.title}
-              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white p-5 sm:p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ type: "spring", damping: 25, stiffness: 200, delay: index * 0.1 }}
+              transition={{
+                type: "spring",
+                damping: 25,
+                stiffness: 200,
+                delay: index * 0.1,
+              }}
             >
-              <h3 className="font-serif text-xl font-semibold text-[#002147] mb-3">
+              <h3 className="font-serif text-lg sm:text-xl font-semibold text-[#002147] mb-2 sm:mb-3">
                 {feature.title}
               </h3>
               <p className="text-sm text-gray-600 leading-relaxed">

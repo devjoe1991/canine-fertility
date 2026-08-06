@@ -1,35 +1,40 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion, useMotionValue, type PanInfo } from "framer-motion";
 import LiquidCard from "@/components/ui/LiquidCard";
 import ServiceProgressLine from "@/components/ui/ServiceProgressLine";
-
-interface ServiceData {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  details: string;
-  price?: string;
-}
+import type { ServiceData } from "@/data/services";
+import { haptic } from "@/lib/haptics";
 
 interface ServiceNavigatorProps {
   services: ServiceData[];
+  /** Optional cap on the number of services to render (e.g. homepage preview). */
+  limit?: number;
 }
 
-export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
+export default function ServiceNavigator({
+  services: allServices,
+  limit,
+}: ServiceNavigatorProps) {
+  const services =
+    limit && limit > 0 ? allServices.slice(0, limit) : allServices;
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  /** Last index that fired a haptic tick, so we don't repeat on same card. */
+  const lastHapticIndexRef = useRef(0);
+  /** Index when drag started, used to know if snap actually moved. */
+  const dragStartIndexRef = useRef(0);
   const [maxScroll, setMaxScroll] = useState(0);
   const [canScroll, setCanScroll] = useState(false);
   const [cardWidth, setCardWidth] = useState(320);
-  const [visibleCardsCount, setVisibleCardsCount] = useState(0);
   const [totalDots, setTotalDots] = useState(0);
   const [sectionHeight, setSectionHeight] = useState<number | null>(null);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  /** Bumped on every snap where haptic() did not fire. Drives the progress
+   *  line scale pulse so desktop and iOS Safari still get visual feedback. */
+  const [tickKey, setTickKey] = useState(0);
 
   const gap = 24;
   const cardWithGap = cardWidth + gap;
@@ -40,10 +45,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   useEffect(() => {
     // Hydration fix: Wait for client-side mount before calculations
     if (typeof window === "undefined") return;
-    
-    // Detect touch device
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    
+
     // Set card width based on window size (client-side only)
     const updateCardWidth = () => {
       setCardWidth(window.innerWidth < 768 ? 280 : 320);
@@ -76,10 +78,9 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
         const container = containerRef.current;
         const containerWidth = container.clientWidth;
         
-        // Calculate total width of all cards including gaps and padding
-        const paddingRight = 20; // Match the padding-right on the slider track
-        const totalCardsWidth = services.length * cardWidth + (services.length - 1) * gap + paddingRight;
-        
+        // Match the padding-right on the slider track
+        const paddingRight = 20;
+
         // Calculate the exact position where the last card's right edge aligns with container's right edge
         // This ensures the last card is fully visible, just like the first card is at position 0
         // Position of last card's left edge: (services.length - 1) * cardWithGap
@@ -95,8 +96,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
         
         // Calculate how many cards are visible and how many dots we need
         const cardsVisible = Math.floor(containerWidth / cardWithGap);
-        setVisibleCardsCount(cardsVisible);
-        
+
         // Calculate dots needed: number of swipe positions
         // If 8 cards and 4 visible, we have 5 positions (0-4)
         if (maxScrollValue > 10 && cardsVisible > 0) {
@@ -165,6 +165,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
         window.removeEventListener("resize", handleResize);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services.length, cardWidth, dragX]);
   
   // Update progress when dragX or maxScroll changes
@@ -178,7 +179,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     }
   }, [dragX, maxScroll]);
 
-  const handleDrag = (event: any, info: any) => {
+  const handleDrag = () => {
     if (!containerRef.current || !canScroll) return;
     
     // Let Framer Motion handle the drag position automatically
@@ -197,8 +198,14 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     
     if (clampedIndex !== activeIndex) {
       setActiveIndex(clampedIndex);
+      // Tick once per card boundary crossed during live drag.
+      if (clampedIndex !== lastHapticIndexRef.current) {
+        const fired = haptic("tick");
+        if (!fired) setTickKey((k) => k + 1);
+        lastHapticIndexRef.current = clampedIndex;
+      }
     }
-    
+
     // Calculate scroll progress (0 to 1)
     if (maxScroll > 0) {
       const progress = Math.max(0, Math.min(1, Math.abs(clampedX) / maxScroll));
@@ -206,7 +213,19 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     }
   };
 
-  const handleDragEnd = (event: any, info: any) => {
+  const handleDragStart = () => {
+    if (!containerRef.current || !canScroll) return;
+    const currentX = dragX.get();
+    const clampedX = Math.max(-maxScroll, Math.min(0, currentX));
+    const idx = Math.round(Math.abs(clampedX) / cardWithGap);
+    dragStartIndexRef.current = idx;
+    lastHapticIndexRef.current = idx;
+  };
+
+  const handleDragEnd = (
+    _event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => {
     if (!containerRef.current || !canScroll || maxScroll <= 0) return;
     
     const currentX = dragX.get();
@@ -252,7 +271,18 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
     const finalX = Math.max(-maxScroll, Math.min(0, targetX));
     setActiveIndex(targetIndex);
     dragX.set(finalX);
-    
+
+    // Snap haptic: tick only if the snapped index moved at all.
+    if (targetIndex !== dragStartIndexRef.current) {
+      const fired = haptic("tick");
+      if (!fired) setTickKey((k) => k + 1);
+    } else if (Math.abs(velocity) > 200) {
+      // Hard swipe that didn't move (boundary). Soft bump.
+      const fired = haptic("soft");
+      if (!fired) setTickKey((k) => k + 1);
+    }
+    lastHapticIndexRef.current = targetIndex;
+
     // Update progress after drag ends
     if (maxScroll > 0) {
       const progress = Math.max(0, Math.min(1, Math.abs(finalX) / maxScroll));
@@ -261,10 +291,10 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
   };
 
   return (
-    <section id="services" className="py-20 bg-white" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "0px", overflowX: "hidden", width: "100%", maxWidth: "100vw" }}>
+    <section id="services" className="py-16 sm:py-20 bg-[#fafafa]" style={{ display: "grid", gridTemplateRows: "1fr auto", minHeight: sectionHeight ? `${sectionHeight + 200}px` : "fit-content", overflowY: "visible", paddingBottom: "0px", overflowX: "hidden", width: "100%", maxWidth: "100vw" }}>
       <div className="max-w-7xl mx-auto px-4" style={{ height: "auto", minHeight: sectionHeight ? `${sectionHeight + 100}px` : "fit-content", overflowY: "visible", overflowX: "hidden", width: "100%", maxWidth: "100%" }}>
         <motion.h2
-          className="font-serif text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
+          className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#002147] text-center mb-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -317,7 +347,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               justifyContent: "flex-start",
               position: "relative",
               touchAction: "pan-x",
-              display: "flex !important" as any,
+              display: "flex !important" as unknown as "flex",
               alignItems: "stretch",
               height: "auto",
               minHeight: "0",
@@ -343,6 +373,7 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               power: 0.4,
               timeConstant: 200
             }}
+            onDragStart={handleDragStart}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
           >
@@ -361,7 +392,11 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
                   boxSizing: "border-box",
                 }}
               >
-                <LiquidCard service={service} index={index} />
+                <LiquidCard
+                  service={service}
+                  index={index}
+                  href={`/services/${service.id}`}
+                />
               </div>
             ))}
           </motion.div>
@@ -388,10 +423,11 @@ export default function ServiceNavigator({ services }: ServiceNavigatorProps) {
               marginTop: "0",
               marginBottom: "0",
             }}>
-              <ServiceProgressLine 
-                total={totalDots} 
+              <ServiceProgressLine
+                total={totalDots}
                 activeIndex={activeIndex}
                 progress={scrollProgress}
+                tickKey={tickKey}
               />
             </div>
           )}
